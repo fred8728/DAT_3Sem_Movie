@@ -7,7 +7,7 @@
     <version>1.0.1</version>
     <packaging>war</packaging>
 
-    <name>jpa-rest-devops-starter</name>
+    <name>MovieMonday</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
