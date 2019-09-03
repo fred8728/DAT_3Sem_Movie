@@ -2,8 +2,22 @@ package facades;
 
 import utils.EMF_Creator;
 import entities.Movie;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import org.hamcrest.Matcher;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasValue;
+import static org.hamcrest.Matchers.isOneOf;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,6 +34,10 @@ public class MovieFacadeTest {
 
     private static EntityManagerFactory emf;
     private static MovieFacade facade;
+    private Movie movie1 = new Movie("Skoledagen i Rom", 5, 2019);
+    private Movie movie2 = new Movie("Manden", 4, 2005);
+    private Movie movie3 = new Movie("Hunden og katten", 1, 2018);
+    private Movie movie4 = new Movie("Sportsflasken", 1, 2005);
 
     public MovieFacadeTest() {
     }
@@ -43,8 +61,8 @@ public class MovieFacadeTest {
      */
     @BeforeAll
     public static void setUpClassV2() {
-       emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST,Strategy.DROP_AND_CREATE);
-       facade = MovieFacade.getMovieFacade(emf);
+        emf = EMF_Creator.createEntityManagerFactory(DbSelector.TEST, Strategy.DROP_AND_CREATE);
+        facade = MovieFacade.getMovieFacade(emf);
     }
 
     @AfterAll
@@ -60,8 +78,10 @@ public class MovieFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Movie.deleteAllMovies").executeUpdate();
-            em.persist(new Movie("Some txt", 5, 2019));
-            em.persist(new Movie("aaa", 4, 2005));
+            em.persist(movie1);
+            em.persist(movie2);
+            em.persist(movie3);
+            em.persist(movie4);
 
             em.getTransaction().commit();
         } finally {
@@ -77,7 +97,24 @@ public class MovieFacadeTest {
     // TODO: Delete or change this method 
     @Test
     public void testAFacadeMethod() {
-        assertEquals(2, facade.getMovieCount(), "Expects two rows in the database");
+        assertEquals(4, facade.getMovieCount(), "Expects four rows in the database");
     }
 
+    /*@Test
+    public void testgetAllMovies() {
+        Movie movie = new Movie();
+        ArrayList<Movie> movies = new ArrayList();
+        movies.add(movie1);
+        movies.add(movie2);
+        movies.add(movie3);
+        movies.add(movie4);
+        assertEquals(movies, facade.getAllMovies());
+    }*/
+
+    @Test
+    public void testgetMovieByID() {
+        Movie movie = facade.getMovieByID(movie1.getId());
+        assertEquals(movie.getName(), "Skoledagen i Rom");
+    }
+    
 }

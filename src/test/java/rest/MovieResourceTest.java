@@ -4,6 +4,7 @@ import entities.Movie;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import javax.persistence.EntityManager;
@@ -14,6 +15,8 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +37,10 @@ public class MovieResourceTest {
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
+    private Movie movie1 = new Movie("Skoledagen i Rom", 5, 2019);
+    private Movie movie2 = new Movie("Manden", 4, 2005);
+    private Movie movie3 = new Movie("Hunden og katten", 1, 2018);
+    private Movie movie4 = new Movie("Sportsflasken", 1, 2005);
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -71,14 +78,16 @@ public class MovieResourceTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Movie.deleteAllMovies").executeUpdate();
-            em.persist(new Movie("Some txt", 5, 2019));
-            em.persist(new Movie("aaa", 4, 2005));
-           
+            em.persist(movie1);
+            em.persist(movie2);
+            em.persist(movie3);
+            em.persist(movie4);
+            
             em.getTransaction().commit();
         } finally {
             em.close();
         }
-    }
+    }  
     
     @Test
     public void testServerIsUp() {
@@ -98,12 +107,27 @@ public class MovieResourceTest {
     }
     
     @Test
-    public void testCount() throws Exception {
+    public void testCountMovies() throws Exception {
         given()
         .contentType("application/json")
         .get("/xxx/count").then()
         .assertThat()
         .statusCode(HttpStatus.OK_200.getStatusCode())
-        .body("count", equalTo(2));   
-    }
+        .body("count", equalTo(4));   
+    }   
+    
+    @Test
+    public void testMovieIsOnList() throws Exception {
+        given()
+        .contentType("application/json")
+        .get("/xxx/all").then()
+        .assertThat()
+        .statusCode(HttpStatus.OK_200.getStatusCode())
+        .body("name", hasItems("Manden"));   
+    }   
+    
 }
+
+
+
+//("Skoledagen i Rom", "Manden", "Hunden og Katten", "Sportsflasken")

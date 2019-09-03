@@ -2,7 +2,6 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dto.MovieDTO;
 import entities.Movie;
 import utils.EMF_Creator;
 import facades.MovieFacade;
@@ -48,7 +47,7 @@ public class MovieResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String getMovieById(@PathParam ("id") int id) {
-        MovieDTO movie = FACADE.getMovieByID(id);
+        Movie movie = FACADE.getMovieByID(id);
         return GSON.toJson(movie);
     }
     
@@ -65,7 +64,7 @@ public class MovieResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String getMovieByName(@PathParam ("name") String name) {
-        List <MovieDTO> movie = FACADE.getMovieByName(name);
+        List <Movie> movie = FACADE.getMovieByName(name);
         return GSON.toJson(movie);
     }
     

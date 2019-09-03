@@ -1,6 +1,6 @@
 package facades;
 
-import dto.MovieDTO;
+
 import entities.Movie;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -49,23 +49,22 @@ public class MovieFacade {
         }
         
     }
-    public MovieDTO getMovieByID(int id){
+    
+    public Movie getMovieByID(int id) {
         EntityManager em = emf.createEntityManager();
         try{
-            List <Movie> list =em.createQuery("Select m from Movie m").getResultList();
-            MovieDTO customer = new MovieDTO(list.get(id-1));
-            
-            return customer;
+            Movie movie = em.find(Movie.class, id);
+            return movie;
         }finally{
             em.close();
         }
     }
 
-    public List<MovieDTO> getMovieByName(String name) {
+    public List<Movie> getMovieByName(String name) {
         EntityManager em = emf.createEntityManager();
         try{
-            TypedQuery <MovieDTO> query =
-                    em.createQuery("Select m from Movie m where m.name =:name", MovieDTO.class);
+            TypedQuery <Movie> query =
+                    em.createQuery("Select m from Movie m where m.name =:name", Movie.class);
             return query.setParameter("name", name).getResultList();
         } finally{
             em.close();
