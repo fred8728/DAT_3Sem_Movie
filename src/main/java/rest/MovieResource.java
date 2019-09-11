@@ -74,10 +74,5 @@ public class MovieResource {
         throw new UnsupportedOperationException();
     }
     
-    @PUT
-    @Path("/{id}")
-    @Consumes({MediaType.APPLICATION_JSON})
-    public void update(Movie entity, @PathParam("id") int id) {
-        throw new UnsupportedOperationException();
-    }
+    
 }

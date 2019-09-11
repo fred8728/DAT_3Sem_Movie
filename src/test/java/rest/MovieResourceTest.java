@@ -125,9 +125,4 @@ public class MovieResourceTest {
         .statusCode(HttpStatus.OK_200.getStatusCode())
         .body("name", hasItems("Manden"));   
     }   
-    
 }
-
-
-
-//("Skoledagen i Rom", "Manden", "Hunden og Katten", "Sportsflasken")
